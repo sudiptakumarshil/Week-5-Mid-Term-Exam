@@ -8,6 +8,14 @@
   <div class="row mt-2">
     <div class="col-md-6">
       <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title text-center">About Our Cars</h5>
+          <p class="card-text text-muted">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas aspernatur facilis doloribus pariatur nam aut velit perferendis, ducimus corporis fuga, laborum in quo recusandae officia enim corrupti odit voluptatum labore repellendus? Error voluptas tempore unde enim eos ullam, consequuntur illum, ipsum quo non dicta. Aut nihil possimus atque expedita aliquid, blanditiis officia animi incidunt dolorem corrupti, placeat delectus qui repudiandae, nam minus rem repellat? Iste amet, unde eligendi optio enim in consequatur ut provident. Suscipit magni hic velit! Culpa veniam cupiditate voluptatibus? Sit tempore illo porro libero optio perferendis exercitationem, earum fugit? Ipsa quasi est aspernatur ipsam minima dolores quo, dolorem eos ratione, sint quibusdam assumenda qui iusto recusandae corrupti repellendus! Nihil sed quasi et voluptatum deleniti, obcaecati reiciendis facere quod perspiciatis minus cum dolorum porro voluptas tempora quidem quos eos architecto sunt molestias. Porro, tenetur nobis tempora voluptatibus beatae, ullam ullam ullam.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
         <img src="/static/images/home_car_slider.jpg" class="card-img-top car-image img-fluid" alt="Car Image" /> <!-- Added img-fluid class -->
         <div class="card-body">
           <h5 class="card-title text-center">Car Showcase</h5>
@@ -15,13 +23,72 @@
         </div>
       </div>
     </div>
-    <div class="col-md-6">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-body">
-          <h5 class="card-title text-center">About Our Cars</h5>
-          <p class="card-text text-muted">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas aspernatur facilis doloribus pariatur nam aut velit perferendis, ducimus corporis fuga, laborum in quo recusandae officia enim corrupti odit voluptatum labore repellendus? Error voluptas tempore unde enim eos ullam, consequuntur illum, ipsum quo non dicta. Aut nihil possimus atque expedita aliquid, blanditiis officia animi incidunt dolorem corrupti, placeat delectus qui repudiandae, nam minus rem repellat? Iste amet, unde eligendi optio enim in consequatur ut provident. Suscipit magni hic velit! Culpa veniam cupiditate voluptatibus? Sit tempore illo porro libero optio perferendis exercitationem, earum fugit? Ipsa quasi est aspernatur ipsam minima dolores quo, dolorem eos ratione, sint quibusdam assumenda qui iusto recusandae corrupti repellendus! Nihil sed quasi et voluptatum deleniti, obcaecati reiciendis facere quod perspiciatis minus cum dolorum porro voluptas tempora quidem quos eos architecto sunt molestias. Porro, tenetur nobis tempora voluptatibus beatae, ullam ullam ullam.</p>
-        </div>
+
+    <div class="col-md-12 mt-4">
+      <div class="row">
+        {% for brand in brands %}
+          <div class="col-md-2 mb-3">
+            <div class="border p-3 text-center" style="background-color: #fff;" onclick="loadCar({{ brand.id }})">{{ brand.name }}</div>
+          </div>
+        {% endfor %}
       </div>
     </div>
+    <div class="col-md-12">
+        <h5 id="total_found" class="border text-center bg-white"></h5>
+        <div class="row" id="car-list">
+
+        </div>
+    </div>
   </div>
+{% endblock %}
+
+{% block script %}
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    function loadCar(brand) {
+      $.ajaxSetup({
+        headers: {
+          'X-CSRFToken': $('meta[name="csrf-token"]').attr('content')
+        }
+      })
+      $.ajax({
+        url: "{% url 'car.by_brand' %}",
+        type: 'GET',
+        data: {
+          brand_id: brand
+        },
+        dataType: 'json',
+        success: function (data) {
+          let carHtml = "";
+          $('#total_found').text(`Total Found: ${data.length}`)
+            $.each(data, function(index, car) {
+                carHtml += `
+                  <div class="col-md-4 mb-4 text-center">
+                      <div class="card shadow-sm h-100">
+                          <img src="/media/${car.image}" class="card-img-top" alt="Car Image">
+                          <div class="card-body">
+                              <h5 class="card-title">${car.name}</h5>
+                              <p class="card-text">${car.description}</p>
+                              <ul class="list-group list-group-flush">
+                                  <li class="list-group-item"><strong>Quantity:</strong> ${car.quantity}</li>
+                                  <li class="list-group-item"><strong>Price:</strong> ${car.price}</li>
+                              </ul>
+                          </div>
+                          <div class="card-footer bg-transparent">
+                            {% if user.is_authenticated %}
+                               <a href="#" class="btn btn-primary btn-block btn-sm">Buy Now</a>
+                            {% endif %}
+                          </div>
+                      </div>
+                  </div>
+                  `;
+            });
+            $('#car-list').html(carHtml);
+        },
+        error: function (error) {
+          console.error(xhr.responseText)
+        }
+      })
+    }
+  </script>
 {% endblock %}
