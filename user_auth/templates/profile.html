@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  User Profile
+{% endblock %}
+
+{% block content %}
+  <div class="container my-5">
+    <div class="row text-center mb-4">
+      <div class="col-12">
+        <h2>Welcome, {{ user }}</h2>
+        <p>Manage your account settings</p>
+      </div>
+    </div>
+
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-4 col-sm-6 mb-2">
+        <a href="{% url 'user.password_change' %}" class="btn btn-outline-primary w-100">Change Password</a>
+      </div>
+      <div class="col-md-4 col-sm-6 mb-2">
+        <a href="{% url 'user.password_change_except_old' %}" class="btn btn-outline-secondary w-100">Forgot Password?</a>
+      </div>
+      <div class="col-md-4 col-sm-6 mb-2">
+        <a href="{% url 'user.update_profile' %}" class="btn btn-outline-success w-100">Update Profile</a>
+      </div>
+    </div>
+
+    {% load crispy_forms_tags %}
+    {% url 'user.update_profile' as profile_url %}
+    {% if request.path == profile_url %}
+      <div class="row justify-content-center mt-4">
+        <div class="col-md-6 col-lg-4">
+          <div class="card shadow">
+            <div class="card-body">
+              <h5 class="card-title text-center">Update Your Profile</h5>
+              <form action="" method="post" novalidate>
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary btn-sm w-100 mt-3">Submit</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
