@@ -43,5 +43,26 @@
         </div>
       </div>
     {% endif %}
+    <div class="row mt-4">
+      {% for invoice in invoices %}
+        <div class="col-md-4 mb-4 text-center">
+          <div class="card shadow-sm h-100">
+            <img src="/media/{{ invoice.car.image }}" class="card-img-top" alt="Car Image" />
+            <div class="card-body">
+              <h5 class="card-title">{{ invoice.car.name }}</h5>
+              <p class="card-text">{{ invoice.car.description }}</p>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <strong>Quantity:</strong> {{ invoice.quantity }}
+                </li>
+                <li class="list-group-item">
+                  <strong>Price:</strong> {{ invoice.car.price }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
   </div>
 {% endblock %}

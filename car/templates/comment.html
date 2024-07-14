@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Comments
+{% endblock %}
+
+{% block content %}
+  <div class="row mt-2">
+    <div class="col-md-12 mt-4">
+      <div class="row">
+        <div class="col-md-6 text-center">
+          <div class="card shadow-sm h-100">
+            <img src="/media/{{ car.image }}" class="card-img-top" alt="Car Image" />
+            <div class="card-body">
+              <h5 class="card-title">{{ car.name }}</h5>
+              <p class="card-text">{{ car.description }}</p>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <strong>Quantity:</strong> {{ car.quantity }}
+                </li>
+                <li class="list-group-item">
+                  <strong>Price:</strong> {{ car.price }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 text-center">
+          <h5>Leave a comment</h5>
+          {% load crispy_forms_tags %}
+          <form action="" autocomplete="off" method="POST" style="width: 50%; margin: auto;" novalidate>
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="d-flex justify-content-center">
+              <button class="btn btn-primary btn-sm">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

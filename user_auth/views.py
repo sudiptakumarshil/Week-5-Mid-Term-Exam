@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from car.models import Invoice
 from .forms import RegisterForm, ChangeUserForm
 from django.contrib import messages
 from django.contrib.auth.forms import (
@@ -44,7 +45,10 @@ def user_login(request):
 
 def user_profile(request):
     if request.user.is_authenticated:
-        return render(request, 'profile.html', {'user': request.user})
+        context = {}
+        context['invoices'] = Invoice.objects.filter(user=request.user)
+        context['user'] = request.user
+        return render(request, 'profile.html', context)
     return redirect('user.login')
 
 
