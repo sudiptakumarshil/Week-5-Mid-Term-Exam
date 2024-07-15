@@ -8,6 +8,7 @@ from .forms import CommentForm
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 
+
 # Create your views here.
 class LoadCarView(View):
     def get(self, request, *args, **kwargs):
@@ -58,3 +59,6 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
         context['car'] = get_object_or_404(Car, id=car_id)
         context['comments'] = Comment.objects.filter(car_id=car_id)
         return context
+
+    def get_success_url(self):
+        return self.request.path
